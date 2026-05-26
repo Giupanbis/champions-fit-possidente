@@ -39,26 +39,46 @@ if ("IntersectionObserver" in window) {
 const contactForm = document.querySelector(".contact-form");
 
 if (contactForm) {
-  contactForm.addEventListener("submit", (event) => {
+  contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const data = new FormData(contactForm);
-    const nome = data.get("nome") || "";
-    const cognome = data.get("cognome") || "";
-    const email = data.get("email") || "";
-    const telefono = data.get("telefono") || "";
-    const note = data.get("note") || "";
     const status = contactForm.querySelector(".form-status");
+    const submit = contactForm.querySelector('button[type="submit"]');
 
-    const subject = encodeURIComponent("Richiesta consulenza gratuita Champion's Fit");
-    const bodyText = encodeURIComponent(
-      `Nome: ${nome} ${cognome}\nE-mail: ${email}\nTelefono: ${telefono}\n\nNote:\n${note}`
-    );
-
+    if (submit) {
+      submit.disabled = true;
+    }
     if (status) {
-      status.textContent = "Perfetto, si apre il tuo client e-mail con il messaggio già pronto.";
+      status.textContent = "Invio della richiesta in corso...";
     }
 
-    window.location.href = `mailto:josepossidente1977@gmail.com?subject=${subject}&body=${bodyText}`;
+    try {
+      const response = await fetch(contactForm.action, {
+        method: "POST",
+        body: data,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Invio non riuscito.");
+      }
+
+      contactForm.reset();
+      if (status) {
+        status.textContent = "Grazie, la richiesta è stata inviata correttamente.";
+      }
+    } catch (error) {
+      if (status) {
+        status.textContent = "Non siamo riusciti a inviare la richiesta. Riprova tra poco o scrivi a josepossidente1977@gmail.com.";
+      }
+    } finally {
+      if (submit) {
+        submit.disabled = false;
+      }
+    }
   });
 }
