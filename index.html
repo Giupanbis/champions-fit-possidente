@@ -190,8 +190,11 @@
             <img class="collage-top" src="assets/contact-top.jpg" alt="Sala pesi Champion's Fit Possidente" loading="lazy" decoding="async">
             <img class="collage-bottom" src="assets/contact-bottom.jpg" alt="Allenamento in palestra" loading="lazy" decoding="async">
           </div>
-          <form class="contact-form" data-reveal>
+          <form class="contact-form" action="send-contact.php" method="post" data-reveal>
             <h2>Contattami</h2>
+            <label class="form-hp" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">Sito web
+              <input name="website" type="text" tabindex="-1" autocomplete="off">
+            </label>
             <div class="form-row">
               <label>Nome *
                 <input name="nome" type="text" placeholder="Nome" required>
